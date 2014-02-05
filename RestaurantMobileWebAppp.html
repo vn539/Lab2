@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title> - jsFiddle demo</title>
+  
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.9.1.js'></script>
+  
+  
+  
+  <script type="text/javascript" src="http://code.jquery.com/mobile/1.3.0-beta.1/jquery.mobile-1.3.0-beta.1.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.3.0-beta.1/jquery.mobile-1.3.0-beta.1.css">
+  
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+  <style type='text/css'>
+    #AboutUs
+ {
+    word-wrap: normal; 
+    width: 510px;
+    height: 150px;
+    position: relative;
+    left: 40px;
+}
+#map
+{
+    width:350px;
+    height:300px;
+    margin-top:5px;
+    left:5px;
+    padding:0px;
+    position:relative;
+    
+}
+#map-canvas {
+        height: 100%;
+        margin: 0px;
+    margin-right: 400px;
+        padding: 0px
+      }
+      #panel {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
+#directions-panel {
+        height: 100%;
+        font-size: 12px;
+        float: right;
+        width: 390px;
+        overflow: auto;
+      }
+#control {
+        background: #fff;
+        padding: 5px;
+        font-size: 14px;
+        font-family: Arial;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+        display: none;
+      }
+  </style>
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+$("#MainCoursePopup li").hover(
+
+function () {
+    $(this).append($("<span> Select your Choice</span>"));
+},
+
+function () {
+    $(this).find("span:last").remove();
+}
+);
+
+// Show local locations
+function initialize() {
+  var myLatlng = new google.maps.LatLng(38.913209, -94.760504);
+  var myLatlng2 = new google.maps.LatLng(38.957052,-94.663555);
+  var mapOptions = {
+    zoom: 10,
+    center: myLatlng
+  }
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: 'OGarden Location 1'
+  });
+
+    var marker2 = new google.maps.Marker({
+      position: myLatlng2,
+      map: map,
+      title: 'OGarden Location 2'
+  });
+
+}
+var button = document.getElementById('btnFind');
+
+var onClick = function() {
+    initialize();
+};
+button.addEventListener('click', onClick, false);
+
+// Initialize for Show directions
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+
+function initializeDir() {
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var mapOptions = {
+    zoom: 7,
+    center: new google.maps.LatLng(41.850033, -87.6500523)
+  };
+  var map = new google.maps.Map(document.getElementById('map'),
+      mapOptions);
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directions-panel'));
+}
+
+// Show direction to location 1
+function calcRoute(dirChoice) {
+    var start = '15095 West 123rd Street Olathe, KS 66062';
+    var end;
+    if (dirChoice == 1){
+        end = new google.maps.LatLng(38.913209, -94.760504);
+    }
+    else{
+        end = new google.maps.LatLng(38.957052,-94.663555);
+    }
+  var request = {
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+}
+
+
+var btnDir1 = document.getElementById('btnDirLocation1');
+var onClick1 = function() {
+    initializeDir();
+    calcRoute("1");
+};
+var btnDir2 = document.getElementById('btnDirLocation2');
+var onClick2 = function() {
+    initializeDir();
+    calcRoute("2");
+};
+
+btnDir1.addEventListener('click', onClick1, false);
+btnDir2.addEventListener('click', onClick2, false);
+
+});//]]>  
+
+</script>
+
+
+</head>
+<body>
+  -<div data-role="http://jsfiddle.net/#savepage" id="page1"></div>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
+<div data-role="page" id="page1">
+    <div data-role="header">
+         <h1> Restaurant Mobile Web Client Application </h1>
+
+    </div>
+    <div data-role="content">
+        <p><a href="#MenuEventPage" data-role="button"> Menu </a>
+        </p>
+        <p><a href="#LocationEventPage" data-role="button"> Local Locations </a>
+
+        </p>
+     <!--   <p><a href="#CateringEventPage" data-role="button"> Catering Service</a> 
+
+        </p> -->
+        <p><a href="#AboutEventPage" data-role="button"> About Us</a>
+
+        </p>
+    </div>
+</div>
+
+            
+<div data-role="page" id="LocationEventPage">
+    <div data-role="header"> <a data-rel="back" data-icon="home">Home</a>
+        <h1>Local Locations </h1>
+    </div>
+    <div data-role="content"></div>
+   <button id="btnFind">Show Locations</button>
+    
+    <div id="locationsmap">
+        <div id="map"></div>
+        <button id="btnDirLocation1">Direction To Location 1</button>
+        <button id="btnDirLocation2">Direction To Location 2</button>
+        <div id="directions-panel"></div>
+    </div>
+    <div id="map-canvas"></div>
+</div>
+
+<!--<div data-role="page" id="CateringEventPage">
+    <div data-role="header"> <a data-rel="back" data-icon="home">Home</a>
+        <h1>Catering Service </h1>
+    </div>
+    <div data-role="content"></div>
+</div> -->
+
+<div data-role="page" id="AboutEventPage">
+    <div data-role="header"> <a data-rel="back" data-icon="home">Home</a>
+        <h1>About Us </h1>
+    </div>
+    <div data-role="content"></div>
+    <div data-role="fieldcontain">
+    <label for="About Us"> </label>
+        
+     <div id="AboutUs" word-wrap="break-word" class="ui-overlay-shadow ui-corner-all">OGarden is a family of more than 780 local restaurants committed to providing every guest with a genuine Italian dining experience.Here, in a quaint Tuscan village, more than 1,200 of our chefs and managers have been inspired by authentic Italian cuisine.To capture the welcoming atmosphere of a Tuscan farmhouse, we’re redesigning more than 350 of our restaurants.</div>
+    </div>	
+
+</div>
+
+
+<div data-role="page" id="MenuEventPage">
+    <div data-role="header"> <a data-rel="back" data-icon="home">Home</a>
+
+         <h1>Menu Main Page</h1>
+
+    </div>
+    <div data-role="content">
+        <p><a href="#AppetizerPopup" data-rel="popup" data-role="button">Appetizers</a>
+        </p>
+        <div data-role="popup" id="AppetizerPopup">
+            <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="b">
+                <li>French Fries</li>
+                <li>Sweet Potato Fries</li>
+                <li>Spinich Dip</li>
+            </ul>
+        </div>
+        <p><a href="#SaladPopup" data-rel="popup" data-role="button"> Salad </a>
+        </p>
+        <div data-role="popup" id="SaladPopup">
+            <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="b">
+                <li>Garden Salad</li>
+                <li>Ceaser Salad</li>
+            </ul>
+        </div>
+        <p><a href="#MainCoursePopup" data-rel="popup" data-role="button"> Main Course </a></p>
+        <div data-role="popup" id="MainCoursePopup">
+        <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="b">
+            <li>Chicken Pasta</li>
+            <li>Chicken Sandwich</li>
+        </ul>
+        </div>
+            <a href="#popupDessert" data-rel="popup" data-role="button">Dessert</a>
+
+        <div data-role="popup" id="popupDessert">Cheesecake
+            <img src="http://4.bp.blogspot.com/-ejzfChmuuH4/Tpr9SAieYsI/AAAAAAAABN4/TZwGNaWRqOI/s400/pumpkin+cheesecake+cake.jpg">
+        </div>
+            
+    
+            <div data-role="page" id="CateringEventPage">
+            <div data-role="header"> <a data-rel="back" data-icon="home">Home</a>
+
+                 <h1>Find A Location </h1>
+
+            </div>
+            <div data-role="content"></div>
+        </div>
+  
+</body>
+
+
+</html>
+
